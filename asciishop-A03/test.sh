@@ -12,7 +12,7 @@ TESTS_SUCCEDED=1
 # compile
 javac ${PROGRAM_NAME}.java
 
-if [ $? -eq 0]; then
+if [ $? -eq 0 ]; then
 	for i in `seq 1 ${NUMBER_OF_INPUT_FILES}`
 	do
 		java $PROGRAM_NAME < $INPUT_NAME_TEMPLATE$i > $GENERATED_OUTPUT_NAME$i
