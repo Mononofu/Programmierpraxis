@@ -6,18 +6,20 @@ public class AsciiShop {
 		AsciiImage img = new AsciiImage(1, 1);
 		AsciiStack stack = new AsciiStack(3);
 
+		// first command has to be create
+		enforce(sc.hasNextLine() && sc.next().equals("create"));
+
+		int width = sc.nextInt();
+		int height = sc.nextInt();
+		enforce(width > 0 && height > 0);
+		img = new AsciiImage(height, width);
+
 		while(sc.hasNextLine()) {
 			String command = sc.next();
 
 			if("centroid".equals(command)) {
 				char c = sc.next().charAt(0);
 				System.out.println(img.getCentroid(c));
-			}
-			else if("create".equals(command)) {
-				int width = sc.nextInt();
-				int height = sc.nextInt();
-				enforce(width > 0 && height > 0);
-				img = new AsciiImage(height, width);
 			}
 			else if("clear".equals(command)) {
 				stack.push(new AsciiImage(img));

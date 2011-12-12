@@ -14,7 +14,11 @@ public class AsciiStack {
 
 	public AsciiImage pop() {
 		if(pTopElement >= 0) {
+			// get element, then decrement
 			AsciiImage top = stack[pTopElement--];
+			// null it to allow memory collection
+			stack[pTopElement + 1] = null;
+			// shrink if possible
 			if(capacity() - pTopElement - 1 > increment && capacity() > increment) {
 				resize(capacity() - increment);
 			}
@@ -30,9 +34,12 @@ public class AsciiStack {
 	}
 
 	public void push(AsciiImage img) {
+		// if stack is too small make it bigger
 		if(pTopElement + 1 >= stack.length) {
 			resize(stack.length + increment);
 		}
+		// need to increment before inserting - otherwise, we would overwrite
+		// the old entry
 		stack[++pTopElement] = img;
 	}
 
@@ -41,11 +48,13 @@ public class AsciiStack {
 	private void resize(int targetSize) {
 		AsciiImage[] newStack = new AsciiImage[targetSize];
 		int stackEnd = targetSize;
+		// make sure that we don't iterate over the end of our old stack when
+		// we increase in size
 		if(targetSize > stack.length)
 			stackEnd = stack.length;
 		for(int i = 0; i < stackEnd; i++)
 			newStack[i] = stack[i];
-		stack = newStack;
+		this.stack = newStack;
 	}
 
 }

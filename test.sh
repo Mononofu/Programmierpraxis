@@ -4,7 +4,7 @@
 TESTS_SUCCEDED=1
 
 # compile
-javac ${PROGRAM_NAME}.java
+javac -Xlint:unchecked *.java
 
 if [ $? -eq 0 ]; then
 	for i in `seq 1 ${NUMBER_OF_INPUT_FILES}`

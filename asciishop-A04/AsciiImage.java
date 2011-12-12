@@ -2,86 +2,62 @@ import java.util.Set;
 import java.util.HashSet;
 
 public class AsciiImage {
-	char[][] image;
+	String image;
 	int height;
 	int width;
 
 	AsciiImage(int h, int w) {
 		height = h;
 		width = w;
-		image = new char[width][height];
-		clear();
+		image = "";
+	}
+
+	public Boolean addLine(String line) {
+		if(line.length() != width) return false;
+		image += line;
+		return true;
 	}
 
 	public int getWidth() { return width; }
 	public int getHeight() { return height; }
 
-	public void clear() {
-		for(int i = 0; i < width; i++)
-			for(int j = 0; j < height; j++)
-				image[i][j] = '.';
-	}
-
-	public void drawLine(int x0, int y0, int x1, int y1, char c) {
-		int dx = x1 - x0;
-		int dy = y1 - y0;
-
-		// catch div by 0
-		double slope = dx == 0 ? 0 : 1.0*dy / dx;
-
-		// only one base case for drawing
-		// see explanaiton in angabe.html
-		if(dx >= 0 && Math.abs(dy) <= Math.abs(dx))
-			for(int i = 0; i <= dx; i++)
-				setPixel(x0 + i, (int) Math.round(y0 + i*slope), c);
-		else if(dx < 0 && Math.abs(dy) <= Math.abs(dx))
-			drawLine(x1, y1, x0, y0, c);
-		else { 
-			transpose();
-			if(dy >= 0 && Math.abs(dy) > Math.abs(dx))
-				drawLine(y0, x0, y1, x1, c);
-			else
-				drawLine(y1, x1, y0, x0, c);
-			transpose();
-		}
-	}
-
 	public void flipV() {
-		for(int i = 0; i < width; i++) {
-			for(int j = 0; j < height / 2; j++) {
-				// just flip each char with it's vertical counterpart
-				char temp = image[i][j];
-				image[i][j] = image[i][height - j - 1];
-				image[i][height - j - 1] = temp;
-			}
-		}
+		String newImage = "";
+		for(int i = height; i > 0; i--)
+			newImage += image.substring((i-1)*width, i*width);
+		image = newImage;
 	}
 
-	public char getPixel(int x, int y) {
-		return image[x][y];
+	private char getPixel(int x, int y) {
+		return image.charAt(x + width * y);
 	}
 
 	private String getLine(int n) {
-		String out = "";
-		for(int i = 0; i < width; i++)
-			out += image[i][n];
-		return out;
+		return image.substring(n*width, (n+1)*width);
 	}
 
-	public void setPixel(int x, int y, char c) {
-		//System.out.println("setting " + x + " " + y );
-		image[x][y] = c;
+	private void setPixel(int x, int y, char c) {
+		int index = x + width * y;
+		image = image.substring(0, index) + c + image.substring(index+1);
 	}
 
+	public int getUniqueChars() {
+		String chars = "";
+		for(char c : image.toCharArray())
+			if(!chars.contains("" + c))
+				chars += "" + c;
+			
+		return chars.length();
+	}
 
 	public void transpose() {
-		char[][] newImage = new char[height][width];
+		String newImage = "";
 
 		// for each line j, get char at column i and add it to our new
 		// line. Then add this new line to the image
 		for(int i = 0; i < width; i++) {
 			for(int j = 0; j < height; j++) {
-				newImage[j][i] = image[i][j];
+				newImage += getPixel(i, j);
 			}
 		}
 
@@ -90,7 +66,7 @@ public class AsciiImage {
 		height = width;
 		width = temp;
 
-		image = newImage;
+		this.image = newImage;
 	}
 
 	public void fill(int x, int y, char c) {
@@ -117,14 +93,6 @@ public class AsciiImage {
 			out += getLine(i) + "\n";
 		return out;
 	}
-
-	public void replace(char oldChar, char newChar) {
-		for(int i = 0; i < width; i++) 
-			for(int j = 0; j < height; j++) 
-				if(image[i][j] == oldChar)
-					image[i][j] = newChar;
-	}
-
 
 	public Boolean isSymmetricH() {
 		// it's horizontally symmetric if each line is a palindrome
