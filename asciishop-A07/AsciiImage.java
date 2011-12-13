@@ -6,17 +6,39 @@ public class AsciiImage {
 	char[][] image;
 	int height;
 	int width;
+	String charset;
 
-	public AsciiImage(int h, int w) {
+	private boolean onlyUniqueChars(String str) {
+		if(str.length() >= 1)
+			return true;
+		return !str.substring(1).contains("" + str.charAt(0)) && onlyUniqueChars(str.substring(1));
+	}
+
+    // erzeugt ein ASCII-Bild der spezifizierten Größe und mit dem angegebenen 
+    // Zeichensatz. Anfangs sind alle Pixel auf den hellsten Wert des 
+    // Zeichensatzes (also dem letzten Zeichen des Strings) gesetzt. Überprüfen 
+    // Sie an dieser Stelle ob Breite und Höhe beide größer 0 sind und werfen 
+    // Sie andernfalls eine IllegalArgumentException. Werfen Sie auch eine 
+    // IllegalArgumentException, falls das charset ein Zeichen doppelt enthält 
+    // oder gar keine Zeichen umfasst.
+	public AsciiImage(int h, int w, String cs) {
+		if(h <=0 || w <= 0 || 0 == cs.length() || !onlyUniqueChars(cs))
+			throw new IllegalArgumentException();
 		height = h;
 		width = w;
+		charset = cs;
 		image = new char[width][height];
-		clear();
+
+		char bg = cs.charAt(cs.length() - 1);
+		for(int i = 0; i < width; i++)
+			for(int j = 0; j < height; j++)
+				image[i][j] = bg;
 	}
 
 	public AsciiImage(AsciiImage img) {
 		height = img.height;
 		width = img.width;
+		charset = img.charset;
 		image = new char[width][height];
 
 		// perform deep-copy of old array
@@ -28,95 +50,13 @@ public class AsciiImage {
 
 	public int getWidth() { return width; }
 	public int getHeight() { return height; }
-
-	public void clear() {
-		for(int i = 0; i < width; i++)
-			for(int j = 0; j < height; j++)
-				image[i][j] = '.';
-	}
-
-	public void drawLine(int x0, int y0, int x1, int y1, char c) {
-		int dx = x1 - x0;
-		int dy = y1 - y0;
-
-		// catch div by 0
-		double slope = dx == 0 ? 0 : 1.0*dy / dx;
-
-		// only one base case for drawing
-		// see explanaiton in angabe.html
-
-		if(dx >= 0 && Math.abs(dy) <= Math.abs(dx))
-			for(int i = 0; i <= dx; i++)
-				setPixel(x0 + i, (int) Math.round(y0 + i*slope), c);
-		else if(dx < 0 && Math.abs(dy) <= Math.abs(dx))
-			drawLine(x1, y1, x0, y0, c);
-		else { 
-			transpose();
-			if(dy >= 0 && Math.abs(dy) > Math.abs(dx))
-				drawLine(y0, x0, y1, x1, c);
-			else
-				drawLine(y1, x1, y0, x0, c);
-			transpose();
-		}
-	}
-
-	public void growRegion(char c) {
-		// get list of points first - simple iterating through array won't work
-		// since it would be influenced by the newly set pixels
-		ArrayList<AsciiPoint> pixels = getPointList(c);
-
-		for(AsciiPoint p : pixels) {
-			// for each of the pixels
-			// check each of the 4 direct neighbors (if it has them)
-			if(p.getX() + 1 < getWidth() && image[p.getX() + 1][p.getY()] == '.') 
-				image[p.getX() + 1][p.getY()] = c;
-			if(p.getX() - 1 >= 0 && image[p.getX() - 1][p.getY()] == '.') 
-				image[p.getX() - 1][p.getY()] = c;
-
-			if(p.getY() + 1 < getHeight() && image[p.getX()][p.getY() + 1] == '.') 
-				image[p.getX()][p.getY() + 1] = c;
-			if(p.getY() - 1 >= 0 && image[p.getX() ][p.getY() - 1] == '.') 
-				image[p.getX() ][p.getY() - 1] = c;
-		 }
-	}
-
-
-	public AsciiPoint getCentroid(char c) {
-		ArrayList<AsciiPoint> pixels = getPointList(c);
-
-		// no center if the char doesn't occur
-		if(pixels.size() == 0)
-			return null;
-
-		long xSum = 0;
-		long ySum = 0;
-
-		// just sum up the coords
-		for(AsciiPoint p : pixels) {
-			xSum += p.getX();
-			ySum += p.getY();
-		}
-	
-		// then divide by count (arithmetic mean)
-		return new AsciiPoint((int) Math.round(xSum / (double) pixels.size()), 
-							  (int) Math.round(ySum / (double) pixels.size()) );
-	}
- 
-
-	public void flipV() {
-		for(int i = 0; i < width; i++) {
-			for(int j = 0; j < height / 2; j++) {
-				// just flip each char with it's vertical counterpart
-				char temp = image[i][j];
-				image[i][j] = image[i][height - j - 1];
-				image[i][height - j - 1] = temp;
-			}
-		}
-	}
+	public String getCharset() { return charset; }
 
 	public char getPixel(int x, int y) { return image[x][y]; }
 
 	public char getPixel(AsciiPoint p) { return getPixel(p.getX(), p.getY()); }
+
+	public boolean isValidPixel(int x, int y) { return x >= 0 && x < width && y >= 0 && y < height; }
 
 	public ArrayList<AsciiPoint> getPointList(char c) {
 		ArrayList<AsciiPoint> pixels = new ArrayList<AsciiPoint>();
@@ -128,117 +68,23 @@ public class AsciiImage {
 		return pixels;
 	}
 
-	private String getLine(int n) {
-		String out = "";
-		for(int i = 0; i < width; i++)
-			out += image[i][n];
-		return out;
-	}
-
 	public void setPixel(int x, int y, char c) {
-		//System.out.println("setting " + x + " " + y );
 		image[x][y] = c;
 	}
 
 	public void setPixel(AsciiPoint p, char c) { setPixel(p.getX(), p.getY(), c); }
 
-	public void straightenRegion(char c) {
-		Boolean changeOccured = false;
-
-		// iterate until no more change occurs
-		// but at least once
-		do {
-			changeOccured = false;
-			// get matches at start of iteration
-			ArrayList<AsciiPoint> pixels = getPointList(c);
-
-			for(AsciiPoint p : pixels) {
-				int neighbours = 0;
-				// check how many neighbors have the same char
-				if(p.getX() + 1 < getWidth() && image[p.getX() + 1][p.getY()] == c) 
-					neighbours++;
-				if(p.getX() - 1 >= 0 && image[p.getX() - 1][p.getY()] == c) 
-					neighbours++;
-
-				if(p.getY() + 1 < getHeight() && image[p.getX()][p.getY() + 1] == c) 
-					neighbours++;
-				if(p.getY() - 1 >= 0 && image[p.getX() ][p.getY() - 1] == c) 
-					neighbours++;
-
-				// if less than two, blank the current char
-				if(neighbours <= 1) {
-					image[p.getX()][p.getY()] = '.';
-					changeOccured = true;
-				}
-			} 
-		} while(changeOccured);
-		
-	}
-
-	public void transpose() {
-		char[][] newImage = new char[height][width];
-
-		// for each line j, get char at column i and add it to our new
-		// line. Then add this new line to the image
-		for(int i = 0; i < width; i++) {
-			for(int j = 0; j < height; j++) {
-				newImage[j][i] = image[i][j];
-			}
-		}
-
-		// boilerplate to switch height and width
-		int temp = height;
-		height = width;
-		width = temp;
-
-		image = newImage;
-	}
-
-	public void fill(int x, int y, char c) {
-		// cache the char which was here previously for later comparisons
-		char old = getPixel(x, y);
-		// replace it in the image, so subsequent calls work on correct data
-		setPixel(x, y, c);
-
-		// For each of the 4 chars surrounding our char, check if it's a valid
-		// position. If so, recursively call fill with the new position
-		if(x + 1 < width && old == getPixel(x+1, y) )
-			fill(x+1, y, c);
-		if(x - 1 >= 0 && old == getPixel(x-1, y) )
-			fill(x-1, y, c);
-		if(y + 1 < height && old == getPixel(x, y+1) )
-			fill(x, y+1, c);
-		if(y - 1 >= 0 && old == getPixel(x, y-1) )
-			fill(x, y-1, c);
-	}
-
 	public String toString() {
 		String out = "";
+
 		for(int i = 0; i < height; i++)
-			out += getLine(i) + "\n";
+		{ 
+			for(int j = 0; j < width; j++)
+				out += image[j][i];
+			out += "\n";
+		} 
 		return out;
 	}
 
-	public void replace(char oldChar, char newChar) {
-		for(int i = 0; i < width; i++) 
-			for(int j = 0; j < height; j++) 
-				if(image[i][j] == oldChar)
-					image[i][j] = newChar;
-	}
 
-
-	public Boolean isSymmetricH() {
-		// it's horizontally symmetric if each line is a palindrome
-		for(int i = 0; i < height; i++)
-			if(!isPalindrome(getLine(i)))
-				return false;
-		return true;
-	}
-
-	private Boolean isPalindrome(String str) {
-		if(str.length() == 0 || str.length() == 1)
-			return true;
-		return (str.charAt(0) == str.charAt(str.length() - 1) && 
-				isPalindrome(str.substring(1, str.length() - 1)));
-	}
 }

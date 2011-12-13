@@ -1,60 +1,65 @@
 public class AsciiStack {
-	private AsciiImage[] stack;
-	private int increment = 0;
-	private int pTopElement = -1;
+	// Diese Klasse implementiert einen Stack (vgl. Stapelspeicher), der seine Größe dynamisch anpasst. Es kann eine beliebige Anzahl an AsciiImage-Objekten gespeichert werden, wobei der Zugriff immer nur auf das oberste Element möglich ist. Diese Implementierung nutzt intern die Klasse AsciiStackNode um mehrere Bilder in einer Liste zu verketten.
 
-	public AsciiStack(int increment) {
-		stack = new AsciiImage[increment];
-		this.increment = increment;
+	private AsciiStackNode head;
+	// erzeugt einen leeren Stack.
+	public AsciiStack() {
+		head = null;
 	}
 
-	public int capacity() { return stack.length; }
-
-	public boolean empty() { return pTopElement == -1; }
-
+	// überprüft, ob zumindest ein Element am Stack liegt.
+	public boolean empty() {
+		return null == head;
+	}
+	
+	// gibt das oberste Element am Stack zurück und entfernt dieses. Liegt kein Element am Stack, so soll null zurückgegeben werden.
 	public AsciiImage pop() {
-		if(pTopElement >= 0) {
-			// get element, then decrement
-			AsciiImage top = stack[pTopElement--];
-			// null it to allow memory collection
-			stack[pTopElement + 1] = null;
-			// shrink if possible
-			if(capacity() - pTopElement - 1 > increment && capacity() > increment) {
-				resize(capacity() - increment);
-			}
-			return top;
-		}
-		else
+		if(empty()) 
 			return null;
+		AsciiImage img = head.getImage();
+		head = head.getNext();
+		return img;
 	}
 
-	public AsciiImage peek() { 
-		if(pTopElement >= 0) return stack[pTopElement]; 
-		else return null;
+	// gibt das oberste Element am Stack zurück ohne es zu entfernen. Liegt nichts am Stack, so soll null zurückgegeben werden.
+	public AsciiImage peek() {
+		return head.getImage();
 	}
 
+	// legt ein AsciiImage oben auf den Stack.
 	public void push(AsciiImage img) {
-		// if stack is too small make it bigger
-		if(pTopElement + 1 >= stack.length) {
-			resize(stack.length + increment);
-		}
-		// need to increment before inserting - otherwise, we would overwrite
-		// the old entry
-		stack[++pTopElement] = img;
+		head = new AsciiStackNode(img, head);
 	}
 
-	public int size() { return pTopElement + 1; }
-
-	private void resize(int targetSize) {
-		AsciiImage[] newStack = new AsciiImage[targetSize];
-		int stackEnd = targetSize;
-		// make sure that we don't iterate over the end of our old stack when
-		// we increase in size
-		if(targetSize > stack.length)
-			stackEnd = stack.length;
-		for(int i = 0; i < stackEnd; i++)
-			newStack[i] = stack[i];
-		this.stack = newStack;
+	// gibt die Anzahl der Elemente im Stack zurück.
+	public int size() {
+		return empty() ? 0 : head.size();
 	}
 
+	private class AsciiStackNode {
+	//	Diese Klasse implementiert einen Knoten des Stacks. Beachten Sie untenstehende Hinweise zu dieser Klasse.
+	private AsciiStackNode next;
+	private AsciiImage image;
+
+	// inizialisiert den Listenknoten.
+	public AsciiStackNode(AsciiImage image, AsciiStackNode next) {
+		this.image = image;
+		this.next = next;
+	}
+
+	// liefert das vom Knoten referenzierte AsciiImage zurück.
+	public AsciiImage getImage() {
+		return image;
+	}
+
+	// liefert eine Referenz auf den nächsten Knoten zurück.
+	public AsciiStackNode getNext() {
+		return next;
+	}
+
+	// liefert die Anzahl der Knoten in der von diesem Knoten referenzierten Restliste plus eins (fÃŒr diesen Knoten).
+	public int size() {
+		return (next == null) ? 1 : 1 + next.size();		// maybe Java has tail-call optimization. probably not ...
+	}
+}
 }

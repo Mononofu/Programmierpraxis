@@ -3,8 +3,8 @@ import java.util.Scanner;
 public class AsciiShop {
 	public static void main(String[] args) {
 		Scanner sc = new Scanner(System.in);
-		AsciiImage img = new AsciiImage(1, 1);
-		AsciiStack stack = new AsciiStack(3);
+		AsciiImage img = new AsciiImage(1, 1, "a");
+		AsciiStack stack = new AsciiStack();
 
 		// first command has to be create
 		enforce(sc.hasNextLine() && sc.next().equals("create"));
@@ -16,47 +16,48 @@ public class AsciiShop {
 		enforce(sc.hasNext());
 		String charset = sc.next();
 		
-		img = new AsciiImage(height, width);
+		img = new AsciiImage(height, width, charset);
 
 		while(sc.hasNextLine()) {
+			try {
 			String command = sc.next();
 
 			if("clear".equals(command)) {
 				stack.push(new AsciiImage(img));
-				img.clear();
+				img = (new ClearOperation()).execute(img);
 			}
 			else if("filter".equals(command)) {
-				panic();
+				stack.push(new AsciiImage(img));
+				enforce("median".equals(sc.next()));
+
+				img = (new MedianOperation()).execute(img);
 			}
 			else if("load".equals(command)) {
 				stack.push(new AsciiImage(img));
+
 				String eof = sc.next();
 				sc.nextLine();
-				int lineNo = 0;
+				String data = "";
 				while(sc.hasNextLine()) {
 					String line = sc.next();
 					if(line.equals(eof))
 						break;	
+					data += line + "\n";
 					sc.nextLine();
-					enforce(line.length() == img.getWidth());
-					for(int i = 0; i < line.length(); i++) {
-						img.setPixel(i, lineNo, line.charAt(i));
-					}
-					lineNo++;
 				}
-				enforce(lineNo == img.getHeight());
+
+				img = (new LoadOperation(data)).execute(img);
 			}
 			else if("print".equals(command)) {
 				System.out.println(img);
 			}
 			else if("replace".equals(command)) {
 				stack.push(new AsciiImage(img));
-				img.replace(sc.next().charAt(0), sc.next().charAt(0));
+				img = (new ReplaceOperation( sc.next().charAt(0), sc.next().charAt(0) )).execute(img);
 			}
 			else if("undo".equals(command)) {
 				if(stack.size() >= 1) {
 					img = stack.pop();
-					System.out.println("STACK USAGE " + stack.size() + "/" + stack.capacity());
 				}
 				else {
 					System.out.println("STACK EMPTY");
@@ -64,6 +65,12 @@ public class AsciiShop {
 			}
 			else {
 				System.out.println("UNKNOWN COMMAND");
+				return;
+			}
+
+			}
+			catch (OperationException e) {
+				System.out.println("OPERATION FAILED" );
 				return;
 			}
 
