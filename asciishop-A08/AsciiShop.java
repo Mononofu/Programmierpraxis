@@ -41,6 +41,9 @@ public class AsciiShop {
 					System.out.println("STACK EMPTY");
 				}
 			} 
+			else if("histogram".equals(command)) {
+				System.out.println(Histogram.getHistogram(img));
+			}
 			else {
 				try {
 					stack.push(new AsciiImage(img));
