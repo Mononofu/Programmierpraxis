@@ -6,6 +6,7 @@ public class ClearFactory implements Factory {
 	}
 
 	public Operation create(Scanner scanner) throws FactoryException {
+		scanner.nextLine();
 		return new ClearOperation();
 	}
 

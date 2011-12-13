@@ -1,6 +1,6 @@
 public class AverageOperation extends FilterOperation {
 
-	public AverageOperation() { }
+	public AverageOperation(int size, BorderMode borderMode) { super(size, borderMode); }
 
 	public int filter(int[] values) {
 		double sum = 0.0;

@@ -2,8 +2,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 abstract public class FilterOperation implements Operation {
+	int size;
+	BorderMode borderMode;
 
-	public FilterOperation() { }
+	public FilterOperation(int size, BorderMode borderMode) { 
+		this.size = size;
+		this.borderMode = borderMode;
+	}
 
 	public AsciiImage execute(AsciiImage img) throws OperationException {
 		String cs = img.getCharset();
@@ -13,16 +18,7 @@ abstract public class FilterOperation implements Operation {
 
 		for(int i = 0; i < result.getWidth(); i++)
 			for(int j = 0; j < result.getHeight(); j++) {
-				int[] pixels = new int[]();
-				int z=0;
-
-				for(int a = i-1; a <= i+1; a++)
-					for(int b = j-1; b <= j+1; b++) 
-						if( img.isValidPixel(a, b) )
-							pixels[z++] = cs.indexOf(img.getPixel(a, b));
-						else
-							pixels[z++] = cs.length() - 1;
-
+				int[] pixels = borderMode.getPixels(i, j, img, size);
 				result.setPixel(i, j, cs.charAt( filter(pixels) ));	
 			}
 

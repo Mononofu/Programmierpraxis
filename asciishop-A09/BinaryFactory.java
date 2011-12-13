@@ -11,7 +11,8 @@ public class BinaryFactory implements Factory {
 			throw new FactoryException("Insufficient parameter");
 		}
 
-		return new BinaryOperation(scanner.next().charAt(0));	
+		// when using nextLine(), leading whitespace is included
+		return new BinaryOperation(scanner.nextLine().trim().charAt(0));	
 	}
 
 }

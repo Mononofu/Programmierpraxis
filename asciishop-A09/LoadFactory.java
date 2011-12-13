@@ -21,6 +21,7 @@ public class LoadFactory implements Factory {
 			data += line + "\n";
 			scanner.nextLine();
 		}
+		scanner.nextLine();
 
 		if(!didEncounterEOF)
 			throw new FactoryException();

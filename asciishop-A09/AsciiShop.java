@@ -28,12 +28,14 @@ public class AsciiShop {
 
 
 		while(sc.hasNextLine()) {
-
 			String command = sc.next();
+
 			if("print".equals(command)) {
 					System.out.println(img);
+					sc.nextLine();
 			} 
 			else if("undo".equals(command)) {
+				sc.nextLine();
 				if(stack.size() >= 1) {
 					img = stack.pop();
 				}
@@ -47,14 +49,12 @@ public class AsciiShop {
 					img = commands.get(command).create(sc).execute(img);	
 				} 
 				catch (FactoryException e) {
-					panic();
+					panic("factory ex: " + e);
 				}
 				catch (OperationException e) {
-					panic("OPERATION FAILED");
+					panic("OPERATION FAILED: " + e);
 				}
 			}
-
-			sc.nextLine(); // again, manually advance to next line
 		}
 
 	}

@@ -41,6 +41,8 @@ public class ReplaceFactory implements Factory {
 			params[i] = s.charAt(0);
 		}
 
+		scanner.nextLine();
+
 		return new ReplaceOperation(params[0], params[1]);
 
 	}
