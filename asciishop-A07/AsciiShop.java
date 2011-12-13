@@ -20,58 +20,52 @@ public class AsciiShop {
 
 		while(sc.hasNextLine()) {
 			try {
-			String command = sc.next();
+				String command = sc.next();
 
-			if("clear".equals(command)) {
-				stack.push(new AsciiImage(img));
-				img = (new ClearOperation()).execute(img);
-			}
-			else if("filter".equals(command)) {
-				stack.push(new AsciiImage(img));
-				enforce("median".equals(sc.next()));
+				if("clear".equals(command)) {
+					stack.push(new AsciiImage(img));
+					img = (new ClearOperation()).execute(img);
+				} else if("filter".equals(command)) {
+					stack.push(new AsciiImage(img));
+					enforce("median".equals(sc.next()));
 
-				img = (new MedianOperation()).execute(img);
-			}
-			else if("load".equals(command)) {
-				stack.push(new AsciiImage(img));
+					img = (new MedianOperation()).execute(img);
+				} else if("load".equals(command)) {
+					stack.push(new AsciiImage(img));
 
-				String eof = sc.next();
-				sc.nextLine();
-				String data = "";
-				while(sc.hasNextLine()) {
-					String line = sc.next();
-					if(line.equals(eof))
-						break;	
-					data += line + "\n";
+					String eof = sc.next();
+					boolean didEncounterEOF = false;
 					sc.nextLine();
-				}
+					String data = "";
+					while(sc.hasNextLine()) {
+						String line = sc.next();
+						if(line.equals(eof)) {
+							didEnconuterEOF = true;
+							break;
+						}
+						data += line + "\n";
+						sc.nextLine();
+					}
+					enforce(didEncounterEOF);
 
-				img = (new LoadOperation(data)).execute(img);
-			}
-			else if("print".equals(command)) {
-				System.out.println(img);
-			}
-			else if("replace".equals(command)) {
-				stack.push(new AsciiImage(img));
-				img = (new ReplaceOperation( sc.next().charAt(0), sc.next().charAt(0) )).execute(img);
-			}
-			else if("undo".equals(command)) {
-				if(stack.size() >= 1) {
-					img = stack.pop();
-				}
-				else {
-					System.out.println("STACK EMPTY");
-				}
-			}
-			else {
-				System.out.println("UNKNOWN COMMAND");
-				return;
-			}
+					img = (new LoadOperation(data)).execute(img);
+				} else if("print".equals(command)) {
+					System.out.println(img);
+				} else if("replace".equals(command)) {
+					stack.push(new AsciiImage(img));
+					img = (new ReplaceOperation( sc.next().charAt(0), sc.next().charAt(0) )).execute(img);
+				} else if("undo".equals(command)) {
+					if(stack.size() >= 1) {
+						img = stack.pop();
+					}
+					else {
+						System.out.println("STACK EMPTY");
+					}
+				} else 
+					panic("UNKNOWN COMMAND");
 
-			}
-			catch (OperationException e) {
-				System.out.println("OPERATION FAILED" );
-				return;
+			} catch (OperationException e) {
+				panic("OPERATION FAILED" );
 			}
 
 			sc.nextLine(); // again, manually advance to next line
@@ -79,8 +73,8 @@ public class AsciiShop {
 
 	}
 
-	static void panic() {
-		System.out.println("INPUT MISMATCH");
+	static void panic(String msg = "INPUT MISMATCH") {
+		System.out.println(msg);
 		System.exit(0);
 	}
 

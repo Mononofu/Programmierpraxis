@@ -37,29 +37,29 @@ public class AsciiStack {
 	}
 
 	private class AsciiStackNode {
-	//	Diese Klasse implementiert einen Knoten des Stacks. Beachten Sie untenstehende Hinweise zu dieser Klasse.
-	private AsciiStackNode next;
-	private AsciiImage image;
+		//	Diese Klasse implementiert einen Knoten des Stacks. Beachten Sie untenstehende Hinweise zu dieser Klasse.
+		private AsciiStackNode next;
+		private AsciiImage image;
 
-	// inizialisiert den Listenknoten.
-	public AsciiStackNode(AsciiImage image, AsciiStackNode next) {
-		this.image = image;
-		this.next = next;
-	}
+		// inizialisiert den Listenknoten.
+		public AsciiStackNode(AsciiImage image, AsciiStackNode next) {
+			this.image = image;
+			this.next = next;
+		}
 
-	// liefert das vom Knoten referenzierte AsciiImage zurück.
-	public AsciiImage getImage() {
-		return image;
-	}
+		// liefert das vom Knoten referenzierte AsciiImage zurück.
+		public AsciiImage getImage() {
+			return image;
+		}
 
-	// liefert eine Referenz auf den nächsten Knoten zurück.
-	public AsciiStackNode getNext() {
-		return next;
-	}
+		// liefert eine Referenz auf den nächsten Knoten zurück.
+		public AsciiStackNode getNext() {
+			return next;
+		}
 
-	// liefert die Anzahl der Knoten in der von diesem Knoten referenzierten Restliste plus eins (fÃŒr diesen Knoten).
-	public int size() {
-		return (next == null) ? 1 : 1 + next.size();		// maybe Java has tail-call optimization. probably not ...
+		// liefert die Anzahl der Knoten in der von diesem Knoten referenzierten Restliste plus eins (fÃŒr diesen Knoten).
+		public int size() {
+			return (next == null) ? 1 : 1 + next.size();		// maybe Java has tail-call optimization. probably not ...
+		}
 	}
-}
 }
