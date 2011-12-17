@@ -48,7 +48,10 @@ public class AsciiShop {
 				try {
 					stack.push(new AsciiImage(img));
 					img = commands.get(command).create(sc).execute(img);	
-				} 
+				}
+				catch (NullPointerException e) {
+					panic("UNKNOWN COMMAND");
+				}
 				catch (FactoryException e) {
 					panic();
 				}

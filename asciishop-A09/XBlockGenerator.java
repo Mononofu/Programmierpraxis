@@ -1,4 +1,6 @@
-public class BorderX extends BorderMode {
+public class XBlockGenerator extends BlockGenerator {
+	XBlockGenerator(int s) { super(s); }
+	
 	public int getPixel(int a, int b, AsciiImage img) {
 		String cs = img.getCharset();
 		

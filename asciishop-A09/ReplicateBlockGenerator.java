@@ -1,4 +1,6 @@
-public class BorderReplicate extends BorderMode {
+public class ReplicateBlockGenerator extends BlockGenerator {
+	ReplicateBlockGenerator(int s) { super(s); }
+	
 	public int getPixel(int a, int b, AsciiImage img) {
 		String cs = img.getCharset();
 

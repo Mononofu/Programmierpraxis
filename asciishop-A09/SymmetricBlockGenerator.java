@@ -1,4 +1,6 @@
-public class BorderSymmetric extends BorderMode{
+public class SymmetricBlockGenerator extends BlockGenerator{
+	SymmetricBlockGenerator(int s) { super(s); }
+	
 	public int getPixel(int a, int b, AsciiImage img) {
 		String cs = img.getCharset();
 

@@ -5,15 +5,15 @@ public class FilterFactory implements Factory {
 	public FilterFactory() {
 	}
 
-	private BorderMode getBorderMode(String s) throws FactoryException {
+	private BlockGenerator getBorderMode(String s, int size) throws FactoryException {
 		if("x".equals(s))
-			return new BorderX();
+			return new XBlockGenerator(size);
 		else if("replicate".equals(s))
-			return new BorderReplicate();
+			return new ReplicateBlockGenerator(size);
 		else if("circular".equals(s))
-			return new BorderCircular();
+			return new CircularBlockGenerator(size);
 		else if("symmetric".equals(s))
-			return new BorderSymmetric();
+			return new SymmetricBlockGenerator(size);
 		else
 			throw new FactoryException("Unknown border mode: " + s);
 	}
@@ -23,7 +23,7 @@ public class FilterFactory implements Factory {
 		String command = sc.next();
 
 		int size = 3;
-		BorderMode borderMode = new BorderX();
+		BlockGenerator borderMode = new XBlockGenerator(size);
 
 		while(sc.hasNext()) {
 			if(sc.hasNextInt()) {
@@ -31,14 +31,14 @@ public class FilterFactory implements Factory {
 				if ( (size + 1) % 2 != 0)
 					throw new FactoryException("Size needs to be odd");
 			} else {
-				borderMode = getBorderMode(sc.next().trim());
+				borderMode = getBorderMode(sc.next().trim(), size);
 			}
 		}
 
 		if("median".equals(command))
-			return new MedianOperation(size, borderMode);
+			return new MedianOperation(borderMode);
 		else if("average".equals(command))
-			return new AverageOperation(size, borderMode);
+			return new AverageOperation(borderMode);
 		else
 			throw new FactoryException();
 	}

@@ -17,7 +17,10 @@ public class LoadOperation implements Operation {
 				throw new OperationException("line length mismatch in line: " + lineNo + " - " + line.length() + " instead of " + img.getWidth());
 
 			for(int i = 0; i < line.length(); i++) {
-				result.setPixel(i, lineNo, line.charAt(i));
+				char pix = line.charAt(i);
+				if(result.getCharset().indexOf(pix) < 0)
+					throw new OperationException("pixel not in charset: " + pix);
+				result.setPixel(i, lineNo, pix);
 			}
 
 			lineNo++;

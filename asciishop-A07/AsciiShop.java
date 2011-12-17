@@ -40,7 +40,7 @@ public class AsciiShop {
 					while(sc.hasNextLine()) {
 						String line = sc.next();
 						if(line.equals(eof)) {
-							didEnconuterEOF = true;
+							didEncounterEOF = true;
 							break;
 						}
 						data += line + "\n";
@@ -73,7 +73,11 @@ public class AsciiShop {
 
 	}
 
-	static void panic(String msg = "INPUT MISMATCH") {
+	static void panic() {
+		panic("INPUT MISMATCH");
+	}
+
+	static void panic(String msg) {
 		System.out.println(msg);
 		System.exit(0);
 	}

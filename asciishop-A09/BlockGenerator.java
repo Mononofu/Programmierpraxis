@@ -1,5 +1,9 @@
-abstract public class BorderMode {
-	public int[] getPixels(int x, int y, AsciiImage img, int regionSize){
+abstract public class BlockGenerator {
+	private int regionSize;
+	
+	BlockGenerator(int s) { regionSize = s; }
+
+	public int[] getBlock(AsciiImage img, int x, int y){
 		int[] pixels = new int[regionSize * regionSize];
 		int z=0;
 

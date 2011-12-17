@@ -2,11 +2,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 abstract public class FilterOperation implements Operation {
-	int size;
-	BorderMode borderMode;
+	BlockGenerator borderMode;
 
-	public FilterOperation(int size, BorderMode borderMode) { 
-		this.size = size;
+	public FilterOperation(BlockGenerator borderMode) { 
 		this.borderMode = borderMode;
 	}
 
@@ -18,7 +16,7 @@ abstract public class FilterOperation implements Operation {
 
 		for(int i = 0; i < result.getWidth(); i++)
 			for(int j = 0; j < result.getHeight(); j++) {
-				int[] pixels = borderMode.getPixels(i, j, img, size);
+				int[] pixels = borderMode.getBlock(img, i, j);
 				result.setPixel(i, j, cs.charAt( filter(pixels) ));	
 			}
 
