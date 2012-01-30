@@ -1,5 +1,9 @@
 public class AsciiStack {
-	// Diese Klasse implementiert einen Stack (vgl. Stapelspeicher), der seine Größe dynamisch anpasst. Es kann eine beliebige Anzahl an AsciiImage-Objekten gespeichert werden, wobei der Zugriff immer nur auf das oberste Element möglich ist. Diese Implementierung nutzt intern die Klasse AsciiStackNode um mehrere Bilder in einer Liste zu verketten.
+	// Diese Klasse implementiert einen Stack (vgl. Stapelspeicher), der seine 
+	// Größe dynamisch anpasst. Es kann eine beliebige Anzahl an 
+	// AsciiImage-Objekten gespeichert werden, wobei der Zugriff immer nur auf 
+	// das oberste Element möglich ist. Diese Implementierung nutzt intern die 
+	// Klasse AsciiStackNode um mehrere Bilder in einer Liste zu verketten.
 
 	private AsciiStackNode head;
 	// erzeugt einen leeren Stack.
@@ -12,7 +16,8 @@ public class AsciiStack {
 		return null == head;
 	}
 	
-	// gibt das oberste Element am Stack zurück und entfernt dieses. Liegt kein Element am Stack, so soll null zurückgegeben werden.
+	// gibt das oberste Element am Stack zurück und entfernt dieses. Liegt kein 
+	// Element am Stack, so soll null zurückgegeben werden.
 	public AsciiImage pop() {
 		if(empty()) 
 			return null;
@@ -21,7 +26,8 @@ public class AsciiStack {
 		return img;
 	}
 
-	// gibt das oberste Element am Stack zurück ohne es zu entfernen. Liegt nichts am Stack, so soll null zurückgegeben werden.
+	// gibt das oberste Element am Stack zurück ohne es zu entfernen. Liegt 
+	// nichts am Stack, so soll null zurückgegeben werden.
 	public AsciiImage peek() {
 		return head.getImage();
 	}
@@ -37,11 +43,12 @@ public class AsciiStack {
 	}
 
 	private class AsciiStackNode {
-		//	Diese Klasse implementiert einen Knoten des Stacks. Beachten Sie untenstehende Hinweise zu dieser Klasse.
+		// Diese Klasse implementiert einen Knoten des Stacks. Beachten Sie 
+		// untenstehende Hinweise zu dieser Klasse.
 		private AsciiStackNode next;
 		private AsciiImage image;
 
-		// inizialisiert den Listenknoten.
+		// initialisiert den Listenknoten.
 		public AsciiStackNode(AsciiImage image, AsciiStackNode next) {
 			this.image = image;
 			this.next = next;
@@ -57,9 +64,12 @@ public class AsciiStack {
 			return next;
 		}
 
-		// liefert die Anzahl der Knoten in der von diesem Knoten referenzierten Restliste plus eins (fÃŒr diesen Knoten).
+		// liefert die Anzahl der Knoten in der von diesem Knoten referenzierten
+		// Restliste plus eins (für diesen Knoten).
 		public int size() {
-			return (next == null) ? 1 : 1 + next.size();		// maybe Java has tail-call optimization. probably not ...
+			return (next == null) ? 1 : 1 + next.size();		
+			// maybe Java has tail-call optimization. probably not ...
+			// it doesn't
 		}
 	}
 }

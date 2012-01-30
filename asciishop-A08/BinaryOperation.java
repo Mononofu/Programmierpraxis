@@ -14,10 +14,7 @@ public class BinaryOperation implements Operation {
 		if(!cs.contains(""+thresh))
 			throw new OperationException("threshold not in charset");
 
-
 		AsciiImage result = new AsciiImage(img);
-
-		char clearChar = cs.charAt(cs.length() - 1);
 
 		for(int i = 0; i < result.getWidth(); i++)
 			for(int j = 0; j < result.getHeight(); j++)
