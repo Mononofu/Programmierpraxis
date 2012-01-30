@@ -7,6 +7,7 @@ public class XBlockGenerator extends BlockGenerator {
 		if( img.isValidPixel(a, b) )
 			return cs.indexOf(img.getPixel(a, b));
 		else
+			// if a pixel is out of bounds, just use background color
 			return cs.length() - 1;
 	}
 }

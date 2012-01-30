@@ -7,8 +7,10 @@ public class SymmetricBlockGenerator extends BlockGenerator{
 		if( img.isValidPixel(a, b) )
 			return cs.indexOf(img.getPixel(a, b));
 		else {
+			// if a pixel is out of bonds, mirror the image around the border
 			int x = a;
 			int y = b;
+			// add 1 to account for 0-based indexing
 			if (x >= img.getWidth()) x = Math.abs(x - 2*img.getWidth() + 1);
 			else if(x < 0) x = Math.abs(x+1);
 

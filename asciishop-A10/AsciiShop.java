@@ -5,9 +5,10 @@ public class AsciiShop {
 	public static void main(String[] args) {
 		Scanner sc = new Scanner(System.in);
 		AsciiImage img = new AsciiImage(1, 1, "a");
+		// use the stack for undo
 		AsciiStack stack = new AsciiStack();
 
-		// first command has to be create
+		// first command has to be 'create'
 		enforce(sc.hasNextLine() && sc.next().equals("create"));
 
 		enforce(sc.hasNextInt());
@@ -19,7 +20,9 @@ public class AsciiShop {
 		
 		img = new AsciiImage(height, width, charset);
 
+		// use the metric set to store saves
 		MetricSet<AsciiImage> saves = new MetricSet<AsciiImage>();
+
 
 		HashMap<String, Factory> commands = new HashMap<String, Factory>();
 		commands.put("clear", new ClearFactory());
@@ -59,6 +62,7 @@ public class AsciiShop {
 			}
 			else {
 				try {
+					// always store the old image on the stack for undo
 					stack.push(new AsciiImage(img));
 					img = commands.get(command).create(sc).execute(img);	
 				} 
