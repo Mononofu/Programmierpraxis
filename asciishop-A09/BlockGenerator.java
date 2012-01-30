@@ -3,6 +3,7 @@ abstract public class BlockGenerator {
 	
 	BlockGenerator(int s) { regionSize = s; }
 
+	// get the surrounding pixels, amount specified in regionSize
 	public int[] getBlock(AsciiImage img, int x, int y){
 		int[] pixels = new int[regionSize * regionSize];
 		int z=0;
@@ -14,5 +15,7 @@ abstract public class BlockGenerator {
 		return pixels;
 	}
 
+	// subclasses override this to control what happens when a pixel is out of
+	// bounds - wrap around, extend current pixel, etc
 	abstract public int getPixel(int a, int b, AsciiImage img);
 }

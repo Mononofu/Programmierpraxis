@@ -17,8 +17,6 @@ public class BinaryOperation implements Operation {
 
 		AsciiImage result = new AsciiImage(img);
 
-		char clearChar = cs.charAt(cs.length() - 1);
-
 		for(int i = 0; i < result.getWidth(); i++)
 			for(int j = 0; j < result.getHeight(); j++)
 				if(cs.indexOf(result.getPixel(i, j)) < iThresh )
